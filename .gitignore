@@ -1,5 +1,1 @@
-./src/motor/__pycache__/
-./src/robot/__pycache__/
-./src/planner/__pycache__/
-./src/simulator/__pycache__/
-./src/visualizer/__pycache__/
+*.pyc
