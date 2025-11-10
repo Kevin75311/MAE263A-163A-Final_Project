@@ -44,7 +44,6 @@ The Python software stack handles **trajectory generation**, **simulation**, and
 MAE263A-163A-Final_Project/
 │
 ├── README.md
-├── main.py # Entry point
 │
 ├── data/
 │ ├── segments/
@@ -53,26 +52,31 @@ MAE263A-163A-Final_Project/
 ├── docs/
 |
 ├── src/
-│ ├── kinematics/
-│ │ ├── forward_kinematics.py
-│ │ ├── inverse_kinematics.py
-│ │
-│ ├── planning/
-│ │ ├── path_planning.py
-│ │ ├── presets.py
-│ │
-│ ├── simulation/
-│ │ ├── simulation.py
-│ │ ├── visualization.py
-│ │
-│ ├── control/
-│ │ ├── motor_interface.py
-│ │ ├── controller.py
-│ │
-│ ├── utils/
-│ │ ├── geometry_utils.py
-|
-|
+| │
+│ ├── main.py # Entry point
+| │
+| ├── motors/
+| │ ├── __init__.py
+| │ ├── motor.py
+| │ └── controller.py
+| │
+| ├── robot/
+| │ ├── __init__.py
+| │ └── robot.py
+| │
+| ├── planner/
+| │ ├── __init__.py
+| │ └── path_generator.py
+| │
+| ├── simulator/
+| │ ├── __init__.py
+| │ └── simulator.py
+| │
+| ├── visualizer/
+| │ ├── __init__.py
+| │ └── visualizer.py
+│
+│
 └── tests/ # Motion logs and debug data
 ```
 
