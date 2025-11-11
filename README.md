@@ -55,6 +55,12 @@ MAE263A-163A-Final_Project/
 | │
 │ ├── main.py # Entry point
 | │
+| ├── kinematics/
+| │ ├── __init__.py
+| │ ├── forward_kinematics.py
+| │ ├── inverse_kinematics.py
+| │ └── kinematics_test.py
+| |
 | ├── motors/
 | │ ├── __init__.py
 | │ ├── motor.py
