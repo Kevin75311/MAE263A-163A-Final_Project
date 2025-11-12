@@ -61,10 +61,11 @@ MAE263A-163A-Final_Project/
 | │ ├── inverse_kinematics.py
 | │ └── kinematics_test.py
 | |
-| ├── motors/
+| ├── motor/
 | │ ├── __init__.py
 | │ ├── motor.py
-| │ └── controller.py
+| │ ├── motor_utils.py
+| │ └── motor_test.py
 | │
 | ├── robot/
 | │ ├── __init__.py
@@ -101,6 +102,7 @@ conda create --name=pyoccenv python=3.10
 conda activate pyoccenv
 conda install -c conda-forge pythonocc-core=7.9.0
 conda install numpy matplotlib
+conda install dynamixel-controller
 ```
 
 Then, you should be ready to run the code.

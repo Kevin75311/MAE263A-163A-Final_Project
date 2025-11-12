@@ -42,7 +42,7 @@ def IK_analytical(x,y,z,theta,degrees=False):
     theta_3_elbup = theta - theta_1_elbup - theta_2_elbup
     theta_3_elbdn = theta - theta_1_elbdn - theta_2_elbdn
 
-    sols = np.array([
+    sols = np.array([ # valid solutions can use any combination of theta_0 value and theta_1-3 set, as long as the theta_1-3 set is matched
         [theta_0_elbup,theta_0_elbdn],
         [theta_1_elbup,theta_1_elbdn],
         [theta_2_elbup,theta_2_elbdn],
@@ -55,7 +55,7 @@ def IK_analytical(x,y,z,theta,degrees=False):
 
 def IK_numerical(x,y,z,theta,guess,degrees=False,tol=1e-3,maxiters=100):
     '''
-    function using numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
+    TODO (mostly for fun): function using numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
     '''
     raise NotImplementedError('oops')
 
@@ -65,7 +65,7 @@ def IK_numerical(x,y,z,theta,guess,degrees=False,tol=1e-3,maxiters=100):
 
 def check_workspace(x,y,z,theta,degrees=False):
     '''
-    utility function to check if a target point is inside the robot's workspace. raises ValueError if not
+    utility function to check if a target point is inside the robot's workspace. calculates wrist position to see if the point is reachable in the desired orientation. raises ValueError if not
     '''
     if z < fk.lims['z_min'] or z > fk.lims['z_max']:
         raise ValueError('Target z-coordinate outside of workspace.')
