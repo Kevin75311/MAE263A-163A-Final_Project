@@ -3,9 +3,9 @@ import numpy as np
 geom = [0,0,0,0,0] # store some link lengths and other offsets that haven't yet been determined
 # link/joint 0 (prismatic) geometric properies:
 geom[0] = {
-    'l_crank': 0.06, # [m]
-    'l_crod': 0.15, # [m]
-    'ht_diff': 0.07, # [m]
+    'l_crank': 0.1, # [m]
+    'l_crod': 0.4, # [m]
+    'ht_diff': -0.008749, # [m]
 }
 # link/joint 1 (revolute) geometric properties:
 geom[1] = {
