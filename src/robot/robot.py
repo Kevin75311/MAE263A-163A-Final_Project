@@ -1,5 +1,6 @@
 # from typing import Tuple
 import numpy as np
+from numpy.linalg import LinAlgError
 import matplotlib.pyplot as plt
 from dynio import dxl
 from motor import MX28AR
@@ -282,6 +283,40 @@ class Robot:
         if degrees:
             return np.degrees(sols)
         return sols
+    
+    # ---- inverse kinematics (numerical) ----
+    def inverse_kinematics_numerical(self, target, theta: float, guess, degrees: bool = False, tol=1e-3, maxiters:int = 100) -> np.ndarray:
+        '''
+        Uses numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
+        '''
+
+        self.check_workspace(*target,theta,degrees)
+        x_goal = np.array([*target,theta])
+        joint_angles = guess.copy()
+
+        for i in range(maxiters):   # newton-raphson iteration to find a solution
+            
+            pos, T_Bf = self.forward_kinematics(*joint_angles, degrees) # fk to find end position given guess
+            theta_end = np.arctan2(T_Bf[1,0],T_Bf[0,0])
+
+            x_curr = np.append(pos,theta_end) # vector of end effector coordinates with angle appended
+            err = x_curr - x_goal # positional error
+
+            J = self.jacobian(*joint_angles, degrees) # space jacobian of manipulator in current configuration
+
+            try:
+                dtheta = 0.2 * np.linalg.solve(J,err) # scale solution to mitigate overshooting
+            except LinAlgError:
+                raise LinAlgError(f'Singularity encountered while solving at iteration {i}')
+
+            joint_angles -= dtheta # adjust guess with correction factor
+
+            if np.linalg.norm(err) < tol: # solution converged to within tolerance
+                if degrees:
+                    joint_angles = np.degrees(joint_angles)
+                return joint_angles
+            
+        raise RuntimeError('solution failed to converge :(') # max iters reached, complain
 
     # ---- plotting helper (optional) ----
     def plot_manipulator(self, theta_0, theta_1, theta_2, theta_3, ax=None, degrees: bool = False):
