@@ -106,3 +106,8 @@ conda install dynamixel-controller
 ```
 
 Then, you should be ready to run the code.
+
+
+## Some Useful information
+* [dynio](https://github.com/UGA-BSAIL/dynamixel-controller)
+* [motor control table](https://emanual.robotis.com/docs/en/dxl/mx/mx-28/#control-table-data-address)

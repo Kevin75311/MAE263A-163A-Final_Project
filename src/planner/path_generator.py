@@ -12,13 +12,13 @@ from OCC.Core.gp import gp_Pnt
 
 
 class PathGenerator:
-    def __init__(self, file_path, sampling=10):
+    def __init__(self, file_path=None, resolution=10):
         """
         Initialize the PathGenerator.
-        :param sampling: number of sample points per edge
+        :param resolution: number of sample points per edge
         """
         self.file_path = file_path
-        self.sampling = sampling
+        self.resolution = resolution
 
     # -------------------- Private Helpers --------------------
 
@@ -87,8 +87,8 @@ class PathGenerator:
             first, last = 0.0, 1.0
 
         pts = []
-        for i in range(self.sampling):
-            t = first + (last - first) * (i / (self.sampling - 1))
+        for i in range(self.resolution):
+            t = first + (last - first) * (i / (self.resolution - 1))
             p = gp_Pnt()
             try:
                 curve.D0(t, p)
@@ -103,8 +103,6 @@ class PathGenerator:
             pts.append([p.X(), p.Y(), p.Z()])
 
         return np.array(pts)
-
-    # -------------------- Public API --------------------
 
     def load_step_edges(self, filename):
         """Load all CAD edges from a STEP file."""
@@ -132,10 +130,18 @@ class PathGenerator:
             if pts.shape[0] == 0:
                 continue
             for i in range(len(pts) - 1):
-                segments.append([pts[i], pts[i + 1]])
+                segments.append([pts[i]/1000, pts[i + 1]/1000])
             all_points.append(pts)
 
         return segments
+
+    # -------------------- Public API --------------------
+
+    def set_path(self, file_path):
+        self.file_path = file_path
+
+    def set_resolution(self, resolution):
+        self.resolution = resolution
 
     def generate_from_step(self, segment_file=None):
         edges = self.load_step_edges(self.file_path)

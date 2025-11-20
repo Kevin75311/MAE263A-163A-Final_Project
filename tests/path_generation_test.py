@@ -177,7 +177,7 @@ def plot_edges(edges, sampling=10):
     return segments
 
 if __name__ == "__main__":
-    filename = "./data/UCLAMAE.step"  # Replace with your STEP file path
+    filename = "./data/steps/UCLAMAE.step"  # Replace with your STEP file path
     edges = load_step_edges(filename)
     segments = plot_edges(edges, sampling=10)
     # segments = (sampling_num * 2 - 2) * read_edges

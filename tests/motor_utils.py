@@ -28,6 +28,11 @@ class MotorArr:
             if positions[i] == None: continue
             motor.set_position(int(positions[i])) # int casting because otherwise the bitwise math gets angry
 
+    def set_angles(self, angles): # angle setpoints
+        for i, motor in enumerate(self.motor_arr):
+            if angles[i] == None: continue
+            motor.set_angle(angles[i])
+
     def set_gains(self, gains):
         if gains == None: # if a single None val is passed, reset all gains
             for motor in self.motor_arr:
@@ -46,6 +51,9 @@ class MotorArr:
 
     def get_positions(self):
         return np.array([motor.get_position() for motor in self.motor_arr])
+    
+    def get_angles(self):
+        return np.array([motor.get_angle() for motor in self.motor_arr])
     
     def apply_write_table(self, data_name, vals): # more general function to write to any value in the control table
         for i, motor in enumerate(self.motor_arr):
