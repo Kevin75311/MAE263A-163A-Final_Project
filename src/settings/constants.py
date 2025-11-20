@@ -33,6 +33,12 @@ GEOM[3] = {
 # end effector geometric properties:
 GEOM[4] = {
     "l_eff": 0.02,  # [m]
+    "red":      0., # [rad] angular offset of each color
+    "yellow":   np.pi/4, # [rad]
+    "green":    2*np.pi/4, # [rad]
+    "blue":     3*np.pi/4, # [rad]
+    "white":    np.pi, # [rad]
+
 }
 
 # static transforms computed from geometry

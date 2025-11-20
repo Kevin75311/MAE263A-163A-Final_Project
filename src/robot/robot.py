@@ -12,6 +12,7 @@ class Robot:
         self.num_motors = num_motors
         self.dxl_comm = dxl.DynamixelIO(port, baud_rate)
         self.motors = [MX28AR(self.dxl_comm, id+1) for id in range(num_motors)]
+        self.color = "red"
 
     def set_positions(self, positions):
         for i, motor in enumerate(self.motors):
@@ -265,8 +266,8 @@ class Robot:
         theta_2_elbup = 2.0 * np.pi - theta_2_elbdn
 
         # theta_3 to satisfy orientation
-        theta_3_elbup = theta_local - theta_1_elbup - theta_2_elbup
-        theta_3_elbdn = theta_local - theta_1_elbdn - theta_2_elbdn
+        theta_3_elbup = theta_local - theta_1_elbup - theta_2_elbup + constants.GEOM[4][self.color]
+        theta_3_elbdn = theta_local - theta_1_elbdn - theta_2_elbdn + constants.GEOM[4][self.color]
 
         # sols = np.array(
         #     [
@@ -312,6 +313,7 @@ class Robot:
             joint_angles -= dtheta # adjust guess with correction factor
 
             if np.linalg.norm(err) < tol: # solution converged to within tolerance
+                degrees[-1] += constants.GEOM[4][self.color]
                 if degrees:
                     joint_angles = np.degrees(joint_angles)
                 return joint_angles

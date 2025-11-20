@@ -56,10 +56,8 @@ def IK_analytical(x,y,z,theta,degrees=False):
 
 def IK_numerical(x,y,z,theta,guess,degrees=False,tol=1e-3,maxiters=100):
     '''
-    TODO (mostly for fun): function using numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
+    Uses numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
     '''
-    # raise NotImplementedError('oops')
-
     check_workspace(x,y,z,theta,degrees)
     x_goal = np.array([x,y,z,theta])
     thetas = guess.copy()
@@ -85,7 +83,6 @@ def IK_numerical(x,y,z,theta,guess,degrees=False,tol=1e-3,maxiters=100):
             return thetas
         
     raise RuntimeError('solution failed to converge :(') # max iters reached, complain
-
 
 
 def check_workspace(x,y,z,theta,degrees=False):
