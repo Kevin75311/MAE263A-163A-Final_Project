@@ -1,5 +1,6 @@
-from typing import Tuple
+# from typing import Tuple
 import numpy as np
+import matplotlib.pyplot as plt
 from dynio import dxl
 from motor import MX28AR
 from settings import constants
@@ -127,10 +128,10 @@ class Robot:
         return T
 
     # ---- forward kinematics ----
-    def forward_kinematics(self, joint_angles, degrees: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+    def forward_kinematics(self, joint_angles, degrees: bool = False) -> tuple[np.ndarray, np.ndarray]:
         """
         Compute full transform of end-effector tip in base frame {B}.
-        Returns (position_vector (3,), T_Bf (4x4)).
+        Returns (position_vector [3x1], T_Bf [4x4]).
         """
 
         theta_0 = joint_angles[0]
@@ -150,8 +151,12 @@ class Robot:
     # ---- jacobian ----
     def jacobian(self, theta_0: float, theta_1: float, theta_2: float, theta_3: float, degrees: bool = False) -> np.ndarray:
         """
-        Compute space Jacobian (4x4) similar to your original function:
-        rows correspond to joints but note previous version used a mixed layout; kept close to original.
+        calculates the space jacobian of a manipulator given its configuration, which relates the task space (x,y,z,t) to joint space (t0,t1,t2,t3)
+        
+                   [[dx/dt0  dx/dt1  dx/dt2  dx/dt3]
+        Jacobian =  [dy/dt0  dy/dt1  dy/dt2  dy/dt3]
+                    [dz/dt0  dz/dt1  dz/dt2  dx/dt3]
+                    [dt/dt0  dt/dt1  dt/dt2  dt/dt3]]
         """
         z_ax = np.array([0.0, 0.0, 1.0])
         T_01 = self._get_T_01(theta_0, degrees)
@@ -177,11 +182,12 @@ class Robot:
             (constants.GEOM[0]["ht_diff"] + constants.GEOM[0]["l_crank"] * s0)
             / np.sqrt(constants.GEOM[0]["l_crod"] ** 2 - (constants.GEOM[0]["ht_diff"] + constants.GEOM[0]["l_crank"] * s0) ** 2)
         )
-        # note: original packed J in an unusual order; keep same layout for compatibility:
-        J[0] = np.array([0.0, 0.0, dz_dt0, 0.0])
-        J[1] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B2[:3, 3]), 1.0)
-        J[2] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B3[:3, 3]), 1.0)
-        J[3] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B4[:3, 3]), 1.0)
+
+        # accidentally packed the jacobian transposed the first time around lol
+        J[:,0] = np.array([0.0, 0.0, dz_dt0, 0.0])
+        J[:,1] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B2[:3, 3]), 1.0)
+        J[:,2] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B3[:3, 3]), 1.0)
+        J[:,3] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B4[:3, 3]), 1.0)
         return J
 
     # ---- workspace check (internal) ----

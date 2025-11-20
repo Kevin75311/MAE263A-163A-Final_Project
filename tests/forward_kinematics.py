@@ -157,16 +157,16 @@ def jacobian(theta_0, theta_1, theta_2, theta_3, degrees=False):
             geom[0]['l_crank']*c0*(geom[0]['ht_diff'] + geom[0]['l_crank']*s0)/ \
             np.sqrt(
                 (geom[0]['l_crod']**2 - (geom[0]['ht_diff'] + geom[0]['l_crank']*s0)**2))
-    J[0] = np.array([0.,0.,dz_dt0,0.])
-    J[1] = np.append(np.cross(
+    J[:,0] = np.array([0.,0.,dz_dt0,0.])
+    J[:,1] = np.append(np.cross(
         z_ax,
         T_Bf[:3,3]-T_B2[:3,3]
         ),1)
-    J[2] = np.append(np.cross(
+    J[:,2] = np.append(np.cross(
         z_ax,
         T_Bf[:3,3]-T_B3[:3,3]
         ),1)
-    J[3] = np.append(np.cross(
+    J[:,3] = np.append(np.cross(
         z_ax,
         T_Bf[:3,3]-T_B4[:3,3]
         ),1)
