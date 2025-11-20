@@ -233,7 +233,7 @@ class Robot:
             theta = np.radians(theta)
 
         # rotate target angle -90 deg to match the x/y-axis orientation of link frames
-        theta_local = theta - np.pi / 2.0
+        theta_local = theta - (np.pi / 2)
 
         # theta_0 (prismatic joint's driving crank angle) computation
         d_0 = z - constants.T_B0[2, 3] - (constants.GEOM[1]["offset"] + constants.GEOM[2]["offset"] + constants.GEOM[3]["offset"])
