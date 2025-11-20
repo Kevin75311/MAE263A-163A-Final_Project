@@ -7,9 +7,9 @@ import inverse_kinematics as ik
 #"""
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.set_xlim(-0.15,0.15)
-ax.set_ylim(-0.15,0.15)
-ax.set_zlim(-0.15,0.15)
+ax.set_xlim(-0.2,0.2)
+ax.set_ylim(-0.2,0.2)
+ax.set_zlim(-0.3,0.15)
 
 positions = np.zeros((3,2000))
 pts = ax.scatter(0,0,0)
@@ -40,9 +40,9 @@ z_vec = np.cos(t_vec)*0.0707
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.set_xlim(-0.15,0.15)
-ax.set_ylim(-0.15,0.15)
-ax.set_zlim(-0.15,0.15)
+ax.set_xlim(-0.2,0.2)
+ax.set_ylim(-0.2,0.2)
+ax.set_zlim(-0.3,0.15)
 ax.scatter(x_vec,y_vec,z_vec)
 
 positions = np.zeros((3,400))

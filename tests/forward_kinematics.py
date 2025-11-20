@@ -3,28 +3,28 @@ import numpy as np
 geom = [0,0,0,0,0] # store some link lengths and other offsets that haven't yet been determined
 # link/joint 0 (prismatic) geometric properies:
 geom[0] = {
-    'l_crank': 0.06, # [m]
-    'l_crod': 0.15, # [m]
-    'ht_diff': 0.07, # [m]
+    'l_crank': 0.1, # [m]
+    'l_crod': 0.4, # [m]
+    'ht_diff': -0.008749, # [m]
 }
 # link/joint 1 (revolute) geometric properties:
 geom[1] = {
-    'h_tower': 0.1, # [m]
-    'offset': -0.01, # [m]
+    'h_tower': 0.1306, # [m]
+    'offset': 0.041, # [m]
 }
 # link/joint 2 (revolute) geometric properties:
 geom[2] = {
-    'l_link': 0.08, # [m]
-    'offset': -0.01, # [m]
+    'l_link': 0.11644, # [m]
+    'offset': 0.041, # [m]
 }
 # link/joint 3 (revolute) geometric properties:
 geom[3] = {
-    'l_link': 0.08, # [m]
-    'offset': 0.01, # [m]
+    'l_link': 0.09739, # [m]
+    'offset': 0.041, # [m]
 }
 # end effector geometric properties:
 geom[4] = {
-    'l_eff': 0.02, # [m]
+    'l_eff': 0.00805, # [m]
 }
 
 T_B0 = np.array([ # static transform expressing the position of frame {0} in frame {B}, a base frame with y-axis up and 0,0,0 at the center of the reachable workspace
