@@ -83,6 +83,7 @@ MAE263A-163A-Final_Project/
 | │ ├── __init__.py
 | │ └── visualizer.py
 │
+├── manipulator_sim.m # kinematic simulator ported to matlab
 │
 └── tests/ # Motion logs and debug data
 ```
