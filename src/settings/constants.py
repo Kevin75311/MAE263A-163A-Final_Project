@@ -11,28 +11,28 @@ GEOM = [
 
 # link/joint 0 (prismatic) geometric properties:
 GEOM[0] = {
-    "l_crank": 0.06,  # [m]
-    "l_crod": 0.15,  # [m]
-    "ht_diff": 0.07,  # [m]
+    "l_crank": 0.1524,  # [m]
+    "l_crod": 0.254,  # [m]
+    "ht_diff": -0.008749,  # [m]
 }
 # link/joint 1 (revolute) geometric properties:
 GEOM[1] = {
-    "h_tower": 0.1,  # [m]
-    "offset": -0.01,  # [m]
+    "h_tower": 0.1306,  # [m]
+    "offset": 0.041,  # [m]
 }
 # link/joint 2 (revolute) geometric properties:
 GEOM[2] = {
-    "l_link": 0.08,  # [m]
-    "offset": -0.01,  # [m]
+    "l_link": 0.11644,  # [m]
+    "offset": 0.041,  # [m]
 }
 # link/joint 3 (revolute) geometric properties:
 GEOM[3] = {
-    "l_link": 0.08,  # [m]
-    "offset": 0.01,  # [m]
+    "l_link": 0.09739,  # [m]
+    "offset": 0.041,  # [m]
 }
 # end effector geometric properties:
 GEOM[4] = {
-    "l_eff": 0.02,  # [m]
+    "l_eff": 0.00805,  # [m]
     "red":      0., # [rad] angular offset of each color
     "yellow":   np.pi/4, # [rad]
     "green":    2*np.pi/4, # [rad]
