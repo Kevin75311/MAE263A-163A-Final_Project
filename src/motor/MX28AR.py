@@ -3,19 +3,19 @@ class MX28AR():
         self.model = "MX28AR"
         self.device = dxl_comm.new_mx28(id, 2)
 
-    def set_PID_gains(self, kP=256, kI=0, kD=0):
+    def set_PID_gains(self, kP=900, kI=100, kD=1000):
         if kP != None:
             kP_scaled = kP / 8
             if kP_scaled > 254 or kP_scaled < 0: raise ArithmeticError('kP outside of acceptable bounds (0-2032)')
-            self.device.write_control_table('P_Gain',int(kP_scaled))
+            self.device.write_control_table('Position_P_Gain',int(kP_scaled))
         if kI != None:
             kI_scaled = kI * 1000/2048
             if kI_scaled > 254 or kI_scaled < 0: raise ArithmeticError('kI outside of acceptable bounds (0-520)')
-            self.device.write_control_table('I_Gain',int(kI_scaled))
+            self.device.write_control_table('Position_I_Gain',int(kI_scaled))
         if kD != None:
             kD_scaled = kD * 4/1000
             if kD_scaled > 254 or kD_scaled < 0: raise ArithmeticError('kD outside of acceptable bounds (0-63500)')
-            self.device.write_control_table('D_Gain',int(kD_scaled))
+            self.device.write_control_table('Position_D_Gain',int(kD_scaled))
     
     # torque functions #
 

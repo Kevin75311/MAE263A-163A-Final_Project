@@ -7,11 +7,15 @@ from motor import MX28AR
 from settings import constants
 
 
+
+
+
 class Robot:
-    def __init__(self, port:str, baud_rate:int, num_motors:int):
+    def __init__(self, port:str, baud_rate:int, num_motors:int = 5, simulation:bool = False):
         self.num_motors = num_motors
-        self.dxl_comm = dxl.DynamixelIO(port, baud_rate)
-        self.motors = [MX28AR(self.dxl_comm, id+1) for id in range(num_motors)]
+        if not simulation:
+            self.dxl_comm = dxl.DynamixelIO(port, baud_rate)
+            self.motors = [MX28AR(self.dxl_comm, id+1) for id in range(num_motors)]
         self.color = "red"
 
     def set_positions(self, positions):
@@ -22,6 +26,9 @@ class Robot:
     def get_positions(self):
         return np.array([motor.get_position() for motor in self.motors])
     
+    def get_angles(self):
+        return np.array([motor.get_angle() for motor in self.motors])
+
     def set_angles(self, angles):
         for i, motor in enumerate(self.motors):
             # check if angle is in the range
@@ -33,6 +40,25 @@ class Robot:
             motor.set_angle(angles[i])
 
     def set_angles_with_feedback(self, angles):
+        
+        # for i, motor in enumerate(self.motors):
+        #     # check if angle is in the range
+        #     angles[i] = angles[i] % 360
+        #     if angles[i] < 0:
+        #         angles[i] += 360
+        #     if angles[i] == None: continue
+
+        # current_positions = self.get_angles()
+        # max_diff = max([abs(current_positions[i] - angles[i]) for i in range(len(angles)) if angles[i] != None]) 
+        # if max_diff > 30:
+        #     steps = max_diff // 15 + 1
+        #     for step in range(1, steps + 1):
+        #         intermediate_angles = [
+        #             current_positions[i] + (angles[i] - current_positions[i]) * step / steps
+        #             for i in range(len(angles))
+        #         ]
+        #         self.set_angles_with_feedback(intermediate_angles)
+
         for i, motor in enumerate(self.motors):
             # check if angle is in the range
             angles[i] = angles[i] % 360
@@ -46,9 +72,6 @@ class Robot:
             current_positions = self.get_angles()
             if all(abs(current_positions[i] - angles[i]) < constants.tolerance for i in range(len(angles))):
                 break
-
-    def get_angles(self):
-        return np.array([motor.get_angle() for motor in self.motors])
 
     def set_gains(self, gains):
         if gains == None:
@@ -146,9 +169,27 @@ class Robot:
         T_23 = self._get_T_ij_revolute(theta_2, 2, degrees=degrees)
         T_34 = self._get_T_ij_revolute(theta_3, 3, degrees=degrees)
 
-        T_Bf = constants.T_B0 @ T_01 @ T_12 @ T_23 @ T_34 @ self.T_4f
+        T_B0 = constants.T_B0
+        T_B1 = T_B0 @ T_01
+        T_B2 = T_B1 @ T_12
+        T_B3 = T_B2 @ T_23
+        T_B4 = T_B3 @ T_34
+        T_Bf = T_B4 @ constants.T_4F
+
+        vec_ht_diff = np.array([0,constants.GEOM[0]['ht_diff'],0])
+        vec_crank = np.array([0,constants.GEOM[0]['l_crank']*np.sin(theta_0),constants.GEOM[0]['l_crank']*np.cos(theta_0)])
+    
+        p0 = T_B0[:3, 3]
+        p0c = T_B0[:3, 3] + vec_ht_diff
+        p0r = T_B0[:3, 3] + vec_ht_diff + vec_crank
+        p1 = T_B1[:3, 3]
+        extra_length = (p1 - p0r)
+        p2 = T_B2[:3, 3]
+        p3 = T_B3[:3, 3]
+        p4 = T_B4[:3, 3]
         pos = T_Bf[:3, 3].copy()
-        return pos, T_Bf
+        
+        return [p0, p0c, p0r, p1, p2, p3, p4, pos, vec_crank, extra_length], T_Bf
 
     # ---- jacobian ----
     def jacobian(self, theta_0: float, theta_1: float, theta_2: float, theta_3: float, degrees: bool = False) -> np.ndarray:
@@ -169,7 +210,7 @@ class Robot:
         T_B2 = constants.T_B0 @ T_01 @ T_12
         T_B3 = T_B2 @ T_23
         T_B4 = T_B3 @ T_34
-        T_Bf = T_B4 @ self.T_4f
+        T_Bf = T_B4 @ constants.T_4F
 
         # convert theta_0 to radians for analytic derivative if input degrees=True
         if degrees:
@@ -339,7 +380,7 @@ class Robot:
         T_B2 = T_B1 @ T_12
         T_B3 = T_B2 @ T_23
         T_B4 = T_B3 @ T_34
-        T_Bf = T_B4 @ self.T_4f
+        T_Bf = T_B4 @ constants.T_4F
 
         # for crank visualization, convert theta_0 to radians for trig (if input degrees)
         theta0_rad = np.radians(theta_0) if degrees else theta_0

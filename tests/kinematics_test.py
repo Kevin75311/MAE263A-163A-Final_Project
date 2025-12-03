@@ -1,15 +1,22 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import forward_kinematics as fk
 import inverse_kinematics as ik
+matplotlib.use('TkAgg')
+
 
 # test 1: see if the forward kinematics works =========================================
-"""
+# """
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.set_xlim(-0.2,0.2)
 ax.set_ylim(-0.2,0.2)
 ax.set_zlim(-0.3,0.15)
+# set axes labels
+ax.set_xlabel('X [m]')
+ax.set_ylabel('Y [m]')
+ax.set_zlabel('Z [m]')
 
 positions = np.zeros((3,2000))
 pts = ax.scatter(0,0,0)
@@ -29,10 +36,10 @@ for t in range(positions.shape[1]):
     plt.pause(0.0005)
 plt.show()
 
-"""
+# """
 
 # test 2: see if we can use inverse kinematics to draw something =======================================
-#"""
+"""
 t_vec = np.linspace(0,2*np.pi,100)
 x_vec = np.sin(t_vec)*0.1 # parametric eqns for an angled ellipsoid thingy
 y_vec = np.cos(t_vec)*0.08
@@ -59,7 +66,7 @@ for i in range(t_vec.shape[0]):
 
 plt.show()
 
-#"""
+"""
 
 # test 3: see if we can use numerical ik to draw something =======================================
 #"""

@@ -1,7 +1,8 @@
 # constants.py
 import numpy as np
 
-tolerance = 2  # degrees
+tolerance = 3.0  # degrees
+CENTER = [ 0.0600801, -0.018, -0.05209453]
 
 # Geometric parameters (mutable dicts like original; use constants module to tweak in one place)
 GEOM = [

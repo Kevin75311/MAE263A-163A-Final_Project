@@ -10,6 +10,9 @@ from OCC.Core.TopAbs import TopAbs_EDGE
 from OCC.Core.BRep import BRep_Tool
 from OCC.Core.gp import gp_Pnt
 
+from settings import constants
+
+
 
 class PathGenerator:
     def __init__(self, file_path=None, resolution=10):
@@ -154,4 +157,15 @@ class PathGenerator:
                         f"{seg[0][0]}, {seg[0][1]}, {seg[0][2]}, "
                         f"{seg[1][0]}, {seg[1][1]}, {seg[1][2]}\n"
                     )
+
+        # shift each point based on constants.CENTER
+        for i in range(len(segments)):
+            segments[i][0][0] += constants.CENTER[0]
+            segments[i][0][1] += constants.CENTER[1]
+            segments[i][0][2] += constants.CENTER[2]
+
+            segments[i][1][0] += constants.CENTER[0]
+            segments[i][1][1] += constants.CENTER[1]
+            segments[i][1][2] += constants.CENTER[2]
+    
         return segments
