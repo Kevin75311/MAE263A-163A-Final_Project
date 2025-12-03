@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import forward_kinematics as fk
 import inverse_kinematics as ik
+from time import perf_counter
 
 # test 1: see if the forward kinematics works =========================================
 """
@@ -47,17 +48,21 @@ ax.scatter(x_vec,y_vec,z_vec)
 
 positions = np.zeros((3,400))
 reached_pts = ax.scatter(0,0,0)
-
+elapsed_time = 0
 artists = []
 for i in range(t_vec.shape[0]):
     [artist.remove() for artist in artists] # clear data from previous iteration
     reached_pts.remove()
+    t_start = perf_counter()
     ik_result = ik.IK_analytical(x_vec[i],y_vec[i],z_vec[i],np.arctan2(y_vec[i],x_vec[i]))
+    t_end = perf_counter()
+    elapsed_time += (t_end-t_start)
     positions[:,i], artists = fk.plot_manipulator(*ik_result[:,1].T,ax)
     reached_pts = ax.scatter(positions[0,:i+1],positions[1,:i+1],positions[2,:i+1],c='b')   # plot all the points we've visited
     plt.pause(0.01)
 
 plt.show()
+print(f'Analytical IK Time: {elapsed_time:.6f}s')
 
 #"""
 
@@ -78,17 +83,20 @@ ax.scatter(x_vec,y_vec,z_vec)
 positions = np.zeros((3,400))
 reached_pts = ax.scatter(0,0,0)
 joint_angles = np.array([1.,1.,1.,1.]) # guess value for initial position (hopfully not a singularity?)
-
+elapsed_time = 0
 artists = []
 for i in range(t_vec.shape[0]):
     [artist.remove() for artist in artists] # clear data from previous iteration
     reached_pts.remove()
+    t_start = perf_counter()
     ik_result = ik.IK_numerical(x_vec[i],y_vec[i],z_vec[i],np.arctan2(y_vec[i],x_vec[i]),joint_angles)
+    t_end = perf_counter()
+    elapsed_time += (t_end-t_start)
     positions[:,i], artists = fk.plot_manipulator(*ik_result.T,ax)
     joint_angles = ik_result.copy()
     reached_pts = ax.scatter(positions[0,:i+1],positions[1,:i+1],positions[2,:i+1],c='b')   # plot all the points we've visited
     plt.pause(0.01)
 
 plt.show()
-
+print(f'Numerical IK Time: {elapsed_time:.6f}s')
 #"""
