@@ -39,6 +39,17 @@ class Robot:
             if angles[i] == None: continue
             motor.set_angle(angles[i])
 
+    def set_ee_speed(self, v_eff):
+        ang_rad = [np.deg2rad(motor.get_angle() - 180) for motor in self.motors] # motor angles in the coordinates used by the jacobian
+        J = self.jacobian(ang_rad[0], ang_rad[2], ang_rad[3], ang_rad[4])
+        omegas = np.linalg.lstsq(J, v_eff) # joint angular velocities necessary to achieve desired instantaneous end effector velocity
+        omegas[1] *= -1 # I don't know which motor is flipped lol
+        for i, motor in enumerate(self.motors[2:]):
+            if np.abs(ang_rad[i]) > 3:
+                motor.set_velocity(0) # if the motor is near a limit don't move it
+            else:
+                motor.set_velocity(int(omegas[i]/0.0239))
+
     def set_angles_with_feedback(self, angles):
         
         # for i, motor in enumerate(self.motors):
