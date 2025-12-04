@@ -41,8 +41,11 @@ class Robot:
 
     def set_ee_speed(self, v_eff):
         ang_rad = [np.deg2rad(motor.get_angle() - 180) for motor in self.motors] # motor angles in the coordinates used by the jacobian
-        J = self.jacobian(ang_rad[0], ang_rad[2], ang_rad[3], ang_rad[4])
-        omegas = np.linalg.lstsq(J, v_eff) # joint angular velocities necessary to achieve desired instantaneous end effector velocity
+        if np.linalg.norm(self.forward_kinematics(ang_rad)[0][7][:2]) > 0.1: # lazy workspace check
+            omegas = np.array([0,0,0,0,0])
+        else:
+            J = self.jacobian(ang_rad[0], ang_rad[2], ang_rad[3], ang_rad[4])
+            omegas = np.linalg.lstsq(J, v_eff)[0] # joint angular velocities necessary to achieve desired instantaneous end effector velocity
         omegas[1] *= -1 # I don't know which motor is flipped lol
         for i, motor in enumerate(self.motors[2:]):
             if np.abs(ang_rad[i]) > 3:
