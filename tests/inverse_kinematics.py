@@ -58,22 +58,22 @@ def IK_numerical(x,y,z,theta,guess,degrees=False,tol=1e-3,maxiters=100):
     '''
     Uses numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
     '''
-    check_workspace(x,y,z,theta,degrees)
-    x_goal = np.array([x,y,z,theta])
+    # check_workspace(x,y,z,theta,degrees)
+    x_goal = np.array([x,y,z])
     thetas = guess.copy()
 
     for i in range(maxiters):   # newton-raphson iteration to find a solution
         
         T_Bf = fk.get_T_Bf(*thetas, degrees) # fk to find end position given guess
         pos = T_Bf[:3,3]
-        theta_end = np.arctan2(T_Bf[1,0],T_Bf[0,0])
-        x_curr = np.append(pos,theta_end) # vector of end effector coordinates with angle appended
+        # theta_end = np.arctan2(T_Bf[1,0],T_Bf[0,0])
+        x_curr = pos # vector of end effector coordinates with angle appended
         err = x_curr - x_goal # positional error
 
         J = fk.jacobian(*thetas, degrees) # space jacobian of manipulator in current configuration
 
         try:
-            dtheta = 0.2 * np.linalg.solve(J,err) # scale solution to mitigate overshooting
+            dtheta = 0.2 * np.linalg.lstsq(J,err)[0] # scale solution to mitigate overshooting
         except LinAlgError:
             raise LinAlgError(f'Singularity encountered while solving at iteration {i}')
 

@@ -8,7 +8,7 @@ matplotlib.use('TkAgg')
 
 
 # test 1: see if the forward kinematics works =========================================
-# """
+"""
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.set_xlim(-0.2,0.2)
@@ -18,6 +18,7 @@ ax.set_zlim(-0.3,0.15)
 ax.set_xlabel('X [m]')
 ax.set_ylabel('Y [m]')
 ax.set_zlabel('Z [m]')
+
 
 positions = np.zeros((3,2000))
 pts = ax.scatter(0,0,0)
@@ -37,7 +38,8 @@ for t in range(positions.shape[1]):
     plt.pause(0.0005)
 plt.show()
 
-# """
+
+"""
 
 # test 2: see if we can use inverse kinematics to draw something =======================================
 """

@@ -220,17 +220,17 @@ class Robot:
         s0 = np.sin(t0)
         c0 = np.cos(t0)
 
-        J = np.zeros((4, 4))
+        J = np.zeros((3, 4))
         dz_dt0 = -constants.GEOM[0]["l_crank"] * s0 - constants.GEOM[0]["l_crank"] * c0 * (
             (constants.GEOM[0]["ht_diff"] + constants.GEOM[0]["l_crank"] * s0)
             / np.sqrt(constants.GEOM[0]["l_crod"] ** 2 - (constants.GEOM[0]["ht_diff"] + constants.GEOM[0]["l_crank"] * s0) ** 2)
         )
 
         # accidentally packed the jacobian transposed the first time around lol
-        J[:,0] = np.array([0.0, 0.0, dz_dt0, 0.0])
-        J[:,1] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B2[:3, 3]), 1.0)
-        J[:,2] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B3[:3, 3]), 1.0)
-        J[:,3] = np.append(np.cross(z_ax, T_Bf[:3, 3] - T_B4[:3, 3]), 1.0)
+        J[:,0] = np.array([0.0, 0.0, dz_dt0])
+        J[:,1] = np.cross(z_ax, T_Bf[:3, 3] - T_B2[:3, 3])
+        J[:,2] = np.cross(z_ax, T_Bf[:3, 3] - T_B3[:3, 3])
+        J[:,3] = np.cross(z_ax, T_Bf[:3, 3] - T_B4[:3, 3])
         return J
 
     # ---- workspace check (internal) ----
@@ -332,8 +332,8 @@ class Robot:
         Uses numerical inverse kinematics to find a set of joint positions that accomplishes a desired end effector position, starting from a guess vector of joint angles and using newton-raphson iteration to converge toward a solution
         '''
 
-        self.check_workspace(*target,theta,degrees)
-        x_goal = np.array([*target,theta])
+        # self.check_workspace(*target,theta,degrees)
+        x_goal = np.array([*target])
         joint_angles = guess.copy()
 
         for i in range(maxiters):   # newton-raphson iteration to find a solution
@@ -341,20 +341,20 @@ class Robot:
             pos, T_Bf = self.forward_kinematics(*joint_angles, degrees) # fk to find end position given guess
             theta_end = np.arctan2(T_Bf[1,0],T_Bf[0,0])
 
-            x_curr = np.append(pos,theta_end) # vector of end effector coordinates with angle appended
+            x_curr = pos # vector of end effector coordinates with angle appended
             err = x_curr - x_goal # positional error
 
             J = self.jacobian(*joint_angles, degrees) # space jacobian of manipulator in current configuration
 
             try:
-                dtheta = 0.2 * np.linalg.solve(J,err) # scale solution to mitigate overshooting
+                dtheta = 0.2 * np.linalg.lstsq(J,err)[0] # scale solution to mitigate overshooting
             except LinAlgError:
                 raise LinAlgError(f'Singularity encountered while solving at iteration {i}')
 
             joint_angles -= dtheta # adjust guess with correction factor
 
             if np.linalg.norm(err) < tol: # solution converged to within tolerance
-                degrees[-1] += constants.GEOM[4][self.color]
+                #joint_angles[-1] += constants.GEOM[4][self.color]
                 if degrees:
                     joint_angles = np.degrees(joint_angles)
                 return joint_angles
